@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../partials/head'); %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+        integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w=="
+        crossorigin="anonymous" />
+
+    <body class="container">
+        <%- include('../partials/header'); %>
+            <main>
+                <h1 class="my-5">
+                    <%= title %>
+                        <a href="/items/create" class="btn btn-primary float-end">Create</a>
+                </h1>
+                <table id="items" class="table table-bordered table-striped text-center mt-4">
+                    <thead>
+                        <tr class="text-white" style="background-color:#6200ee;">
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                </table>
+            </main>
+
+            <%- include('../partials/footer'); %>
+                <script src="/js/bootstrap.min.js"></script>
+                <script src="/js/jquery.min.js"></script>
+                <script type="text/javascript" language="javascript"
+                    src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+                <script type="text/javascript" language="javascript"
+                    src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap5.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+                <script>
+                    $('#items').DataTable({
+                        ajax: {
+                            url: "/items/getData",
+                            dataSrc: ""
+                        },
+                        columns: [
+                            { "data": "id" },
+                            { 'data': 'name' },
+                            { 'data': 'status' },
+                            {
+                                "data": null,
+                                "render": function (data) {
+                                    return '<a href="/items/' + data.id + '" class="btn btn-info mx-1"><i class="fas fa-eye"></i></a><a href="/items/' + data.id + '/edit" class="btn btn-warning mx-1"><i class="fas fa-edit"></i></a><button onclick="deleteRecord(' + data.id + ')" class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>'
+                                }
+                            }
+                        ],
+                        pageLength: 10,
+                    });
+
+
+                    function deleteRecord(id) {
+                        Swal.fire({
+                            title: 'Confirm delete: ' + id + '?',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d33',
+                            cancelButtonColor: '#6c757d',
+                            confirmButtonText: 'confirm'
+                        }).then((result) => {
+                            console.log(result);
+                            if (result.isConfirmed) {
+                                $.ajax({
+                                    type: 'DELETE',
+                                    url: '/items/' + id,
+                                    success: function (response) {
+                                        if (response.success) {
+                                            $('#items').DataTable().ajax.reload();
+                                        } else {
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'Error',
+                                                text: response.message
+                                            });
+                                        }
+                                    },
+                                    error: function (error) {
+                                        console.error(error);
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error',
+                                            text: 'Error deleting user'
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    };
+
+                </script>
+
+    </body>
+
+</html>

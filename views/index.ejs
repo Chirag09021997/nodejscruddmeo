@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<%- include('./partials/head',{title:"title"}); %>
+
+  <body class="container">
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-light bg-success my-2">
+        <h5 class="mx-3">
+          NodeJs
+        </h5>
+        <ul class="navbar-nav ms-auto me-5">
+          <li class="nav-item">
+            <a class="nav-link text-light" href="/login">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="/register">Register</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <h1 class="my-5 text-success">
+      Welcome to <%= title %>
+    </h1>
+
+    <%- include('./partials/footer'); %>
+  </body>
+
+</html>
